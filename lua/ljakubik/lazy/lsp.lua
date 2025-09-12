@@ -28,8 +28,10 @@ return {
             ensure_installed = {
                 "lua_ls",
                 "rust_analyzer",
-                "tsserver",
+                "ts_ls",
             },
+            -- Avoid using the new vim.lsp.enable API (not available on older Neovim)
+            automatic_enable = false,
             handlers = {
                 function(server_name) -- default handler (optional)
 
