@@ -1,8 +1,8 @@
 return {
     "neovim/nvim-lspconfig",
     dependencies = {
-        "williamboman/mason.nvim",
-        "williamboman/mason-lspconfig.nvim",
+        "mason-org/mason.nvim",
+        "mason-org/mason-lspconfig.nvim",
         "hrsh7th/cmp-nvim-lsp",
         "hrsh7th/cmp-buffer",
         "hrsh7th/cmp-path",
@@ -30,8 +30,7 @@ return {
                 "rust_analyzer",
                 "ts_ls",
             },
-            -- Avoid using the new vim.lsp.enable API (not available on older Neovim)
-            automatic_enable = false,
+            --automatic_enable = false,
             handlers = {
                 function(server_name) -- default handler (optional)
 
@@ -51,6 +50,18 @@ return {
                                 }
                             }
                         }
+                    }
+                end,
+
+                ["ts_ls"] = function()
+                    local lspconfig = require("lspconfig")
+                    lspconfig.ts_ls.setup {
+                        capabilities = capabilities,
+                        root_dir = function(bufnr, on_dir)
+                            local markers = { "package-lock.json", "yarn.lock", "pnpm-lock.yaml", "bun.lockb", "bun.lock", "deno.lock", ".git" }
+                            local project_root = vim.fs.root(bufnr, markers) or vim.fn.getcwd()
+                            on_dir(project_root)
+                        end,
                     }
                 end,
             }

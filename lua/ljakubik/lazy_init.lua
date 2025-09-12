@@ -12,7 +12,7 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
-    spec = "ljakubik.lazy",
+    spec = { import = "ljakubik.lazy" },
     change_detection = { notify = false },
     rocks = { enabled = false }
 })

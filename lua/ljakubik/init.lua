@@ -4,6 +4,30 @@ require("ljakubik.remap")
 require("ljakubik.lazy_init")
 
 
+-- Compatibility: some plugins (e.g., nvim-lspconfig ts_ls) may pass grouped
+-- root markers (nested tables) to vim.fs.root. Flatten to avoid errors where
+-- vim.fs.joinpath receives a table.
+do
+    local original_fs_root = vim.fs.root
+    vim.fs.root = function(source, marker)
+        if type(marker) == "table" and type(marker[1]) == "table" then
+            local flat = {}
+            for _, group in ipairs(marker) do
+                if type(group) == "table" then
+                    for _, m in ipairs(group) do
+                        flat[#flat + 1] = m
+                    end
+                else
+                    flat[#flat + 1] = group
+                end
+            end
+            marker = flat
+        end
+        return original_fs_root(source, marker)
+    end
+end
+
+
 local augroup = vim.api.nvim_create_augroup
 local ThePrimeagenGroup = augroup('ThePrimeagen', {})
 
