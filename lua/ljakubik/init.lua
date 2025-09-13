@@ -3,10 +3,6 @@ require("ljakubik.remap")
 
 require("ljakubik.lazy_init")
 
-
--- Compatibility: some plugins (e.g., nvim-lspconfig ts_ls) may pass grouped
--- root markers (nested tables) to vim.fs.root. Flatten to avoid errors where
--- vim.fs.joinpath receives a table.
 do
     local original_fs_root = vim.fs.root
     vim.fs.root = function(source, marker)
